@@ -17,13 +17,13 @@ class Tema_Base:
     #Tela
     cor_fundo_tela = PRETO
     cor_borda_tela = ROXO
-    cor_obstaculos = VERDE
+    cor_obstaculos = CINZA
     cor_letras = BRANCO
-    cor_comida_padrão = AMARELO
+    cor_comida_padrão = VERMELHO
     #---------------------------------------
     #Snake
-    cor_cabeca_snake = BRANCO
-    cor_corpo_cobra = CIANO
+    cor_cabeca_snake = AMARELO
+    cor_corpo_cobra = VERDE
     #---------------------------------------
     #Powers
     # Lista de cores para a animação da PowerBox
@@ -37,7 +37,7 @@ class Tema_Base:
     #2-Turbo:
     cor_corpo_cobra_turbo = ROXO
     #3-Frutas Dobro:
-    cor_comida_dobro = VERMELHO
+    cor_comida_dobro = MAGENTA
 
     
 class Tema_claro:
