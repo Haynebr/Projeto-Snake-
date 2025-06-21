@@ -3,30 +3,16 @@ from Game import Map, Snake, Foods, Utils
 from Game.Obstacles import Obstacle
 from Game.Enemies import Enemy
 
-def main():
+def main(map_width, map_height, screen, cell_size, clock):
     pygame.init()
 
-    # Configurações do mapa
-    cell_size = Map.MapClass.cell_size  # Tamanho de cada célula da grid (em px)
-    map_width = Map.MapClass.map_width   # Nº de células na horizontal
-    map_height = Map.MapClass.map_height  # Nº de células na vertical
-
-    # Calcula o tamanho da janela em pixels com base no tamanho do grid
-    screen_width = cell_size * map_width
-    screen_height = cell_size * map_height
-
-    # Cria a janela do jogo com o tamanho definido
-    screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption("Projeto Snake Game")
-
-    clock = pygame.time.Clock()
     snake_obj = Snake.Snake()
-    food = Foods.Food(map_width, map_height, snake_obj.snake_pos)
-    obstacles = Obstacle(map_width, map_height, snake_obj.snake_pos, food.posicao, num_obstacles=10)
-    enemies = [Enemy(map_width, map_height, snake_obj.snake_pos, food.posicao, obstacles.positions) for i in range(3)]
+    obstacles = Obstacle(map_width, map_height, snake_obj.snake_pos, num_obstacles=10)
+    enemies = [Enemy(map_width, map_height, snake_obj.snake_pos, obstacles.positions) for i in range(3)]
+    food = Foods.Food(map_width, map_height, snake_obj.snake_pos, obstacles.positions)
 
 
-    running = True 
+    running = True
     while running:  # loop principal do jogo
         screen.fill((0, 0, 0))  # Preenche o fundo da tela
 
@@ -55,9 +41,9 @@ def main():
                 running = False 
 
         if snake_obj.snake_pos[0] == food.posicao: # verifica se a cobra está "em cima" de uma comida
-            food = Foods.Food(map_width, map_height, snake_obj.snake_pos)
+            food = Foods.Food(map_width, map_height, snake_obj.snake_pos, obstacles.positions)
             snake_obj.snake_pos.append(snake_obj.snake_pos[-1])  # aumenta o tamanho da cobra
-            snake_obj.posicao = food.gerar_nova_posicao(snake_obj.snake_pos)  # gera nova comida
+            snake_obj.posicao = food.gerar_nova_posicao(snake_obj.snake_pos, obstacles.positions)  # gera nova comida
         
         snake_obj.move(map_width, map_height) # Atualiza a posição da cobra
         for enemy in enemies:
@@ -75,7 +61,7 @@ def main():
         pygame.display.flip() # Atualiza a tela
         clock.tick(10) # fps
 
-    pygame.quit()
+    return
 
 if __name__ == "__main__":
     main()
