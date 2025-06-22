@@ -1,7 +1,7 @@
 # Main.py
 
 import pygame
-from Game import Map, Snake, Foods, Utils, Score
+from Game import Map, Snake, Foods, Utils, Score, Config
 from Game.Obstacles import Obstacle
 from Game.Enemies import Enemy
 from Game.Powers import PowerManager
@@ -9,6 +9,7 @@ from Game.Colors import Tema_Base, BRANCO # Importa o tema para usar as cores
 
 def main(map_width, map_height, screen, cell_size, clock):
     pygame.init()
+    gameConfigs = Config.dictConfigs
 
     cell_size = Map.MapClass.cell_size
     map_width = Map.MapClass.map_width
@@ -29,10 +30,10 @@ def main(map_width, map_height, screen, cell_size, clock):
         current_fps = new_fps
 
     snake_obj = Snake.Snake()
-    obstacles = Obstacle(map_width, map_height, snake_obj.snake_pos, num_obstacles=10)
-    enemies = [Enemy(map_width, map_height, snake_obj.snake_pos, obstacles.positions) for i in range(3)]
+    obstacles = Obstacle(map_width, map_height, snake_obj.snake_pos, gameConfigs['Obstacles'])
+    enemies = [Enemy(map_width, map_height, snake_obj.snake_pos, obstacles.positions) for i in range(gameConfigs['Enemies'])]
     score_obj = Score.Score()
-    food = Foods.Food(map_width, map_height, snake_obj.snake_pos, obstacles.positions)
+    food = Foods.Food(map_width, map_height, snake_obj.snake_pos, obstacles.positions, gameConfigs['Foods'])
     
     power_manager = PowerManager()
     snake_obj.set_fps = set_game_fps
@@ -50,21 +51,26 @@ def main(map_width, map_height, screen, cell_size, clock):
                 elif event.key == pygame.K_LEFT: snake_obj.change_direction((-1, 0))
                 elif event.key == pygame.K_RIGHT: snake_obj.change_direction((1, 0))
         
-        power_manager.update(snake_obj, food, obstacles)
+        if gameConfigs['Powers']:
+            power_manager.update(snake_obj, food, obstacles)
 
         if snake_obj.out_of_bounds(map_width, map_height) or \
            snake_obj.snake_pos[0] in obstacles.positions or \
+           snake_obj.snake_pos[0] in snake_obj.snake_pos[1:] or \
            any(snake_obj.snake_pos[0] in e.snake_pos for e in enemies):
             running = False 
+            return
 
-        if snake_obj.snake_pos[0] == food.posicao:
+        if snake_obj.snake_pos[0] in food.positions:
             growth_amount = 2 if snake_obj.double_points_active else 1
             score_to_add = 20 if snake_obj.double_points_active else 10
             
             score_obj.adicionar(score_to_add)
             score_obj.exibir()
 
-            food = Foods.Food(map_width, map_height, snake_obj.snake_pos, obstacles.positions)
+            eaten_food_index = food.positions.index(snake_obj.snake_pos[0])
+
+            food.positions[eaten_food_index] = food.gerar_uma_unica_posicao(snake_obj.snake_pos, obstacles.positions)
             
             for _ in range(growth_amount):
                 snake_obj.snake_pos.append(snake_obj.snake_pos[-1])
@@ -85,7 +91,8 @@ def main(map_width, map_height, screen, cell_size, clock):
 
         # EFEITO VISUAL DA FRUTA DUPLICADA: Muda a cor da comida
         cor_comida = Tema_Base.cor_comida_dobro if snake_obj.double_points_active else Tema_Base.cor_comida_padrão
-        Utils.draw_rect(screen, food.posicao, cor_comida, cell_size)
+        for pos in food.positions:
+            Utils.draw_rect(screen, pos, cor_comida, cell_size)
 
         # Desenha os obstáculos usando a cor do tema
         for obs in obstacles.positions:

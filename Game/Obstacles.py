@@ -1,7 +1,7 @@
 import random
 
 class Obstacle:
-    def __init__(self, map_width, map_height, snake_positions, num_obstacles=5):
+    def __init__(self, map_width, map_height, snake_positions, num_obstacles):
         self.positions = self.generate_obstacles(map_width, map_height, snake_positions, num_obstacles)
 
     def generate_obstacles(self, width, height, snake_positions, count):

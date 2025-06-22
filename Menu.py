@@ -1,6 +1,6 @@
 import pygame
 import sys
-from Game import Main, Map
+from Game import Main, Map, Config, Colors
 
 pygame.init()
 # Tela
@@ -19,21 +19,21 @@ pygame.display.set_caption("Projeto Snake Game")
 
 clock = pygame.time.Clock()
 # Cores
-PRETO = (0, 0, 0)
-BRANCO = (255, 255, 255)
-AMARELO = (255, 255, 0)
-CINZA = (100, 100, 100)
+PRETO = Colors.PRETO
+BRANCO = Colors.BRANCO
+AMARELO = Colors.AMARELO
+CINZA = Colors.CINZA
 # Fontes
-fonte_titulo = pygame.font.Font(None, 60)
-fonte_opcao = pygame.font.Font(None, 40)
+fonte_titulo = pygame.font.Font("Assets/text\Pixeltype.ttf", 60)
+fonte_opcao = pygame.font.Font("Assets/text\Pixeltype.ttf", 40)
 # Opções
-opcoes = ["Jogar", "Opções", "Sair"]
+opcoes = ["Start", "Options", "Exit"]
 opcao_selecionada = 0
 # Retângulos dos botões
 botoes = [
-    pygame.Rect(screen_width // 2 - 100, 220, 200, 50),
-    pygame.Rect(screen_width // 2 - 100, 300, 200, 50),
-    pygame.Rect(screen_width // 2 - 100, 390, 200, 50),
+    pygame.Rect(screen_width // 2 - 100, screen_height // 3, 200, 50),
+    pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 90, 200, 50),
+    pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 180, 200, 50),
 ]
 # Clock
 clock = pygame.time.Clock()
@@ -42,10 +42,10 @@ rodando = True
 while rodando:
     screen.fill(PRETO)
     # Título
-    titulo = fonte_titulo.render("Jogos da corinha",True,BRANCO)
+    titulo = fonte_titulo.render("Snake Game",True,BRANCO)
     screen.blit(titulo, (screen_width //
                         2 - titulo.get_width() //
-                        2, 100))
+                        2, screen_height // 4))
     # POSICIONA O MOUSE
     mouse = pygame.mouse.get_pos()
     clicando = pygame.mouse.get_pressed()[0]
@@ -79,7 +79,7 @@ while rodando:
                     if i == 0:
                         Main.main(map_width, map_height, screen, cell_size, clock)
                     elif i == 1:
-                        print("Configurações...")
+                        Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
                     elif i == 2:
                         rodando = False
     #EVENTO DO BOTÃO DO TECLADO(setinha pra cima,baixo e ENTER)
@@ -92,7 +92,7 @@ while rodando:
                 if opcao_selecionada == 0:
                     Main.main(map_width, map_height, screen, cell_size, clock)
                 elif opcao_selecionada == 1:
-                    print("Configurações...")
+                    Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
                 elif opcao_selecionada == 2:
                     rodando = False
 

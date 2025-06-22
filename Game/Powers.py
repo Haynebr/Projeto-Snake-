@@ -69,7 +69,7 @@ class PowerManager:
                 self.next_spawn_time = now + self.spawn_interval
         else:
             if now >= self.next_spawn_time:
-                self._spawn_power_box(snake, food.posicao, obstacles.positions)
+                self._spawn_power_box(snake, food.positions, obstacles.positions)
 
         if box:
             head_pos_grid = snake.snake_pos[0]
@@ -91,10 +91,11 @@ class PowerManager:
                 if self.active_power_type == 'magnet_fruit':
                     self._apply_magnet_effect(snake, food)
     
-    def _spawn_power_box(self, snake, food_pos, obstacle_list):
+    def _spawn_power_box(self, snake, food, obstacle_list):
         possible_positions = set((x, y) for x in range(0, SCREEN_WIDTH, GRID_SIZE) for y in range(0, SCREEN_HEIGHT, GRID_SIZE))
         occupied_positions = set((pos[0] * GRID_SIZE, pos[1] * GRID_SIZE) for pos in snake.snake_pos)
-        occupied_positions.add((food_pos[0] * GRID_SIZE, food_pos[1] * GRID_SIZE))
+        for pos in food:
+            occupied_positions.add((pos[0] * GRID_SIZE, pos[1] * GRID_SIZE))
         occupied_positions.update((pos[0] * GRID_SIZE, pos[1] * GRID_SIZE) for pos in obstacle_list)
         safe_positions = list(possible_positions - occupied_positions)
         if safe_positions:
@@ -124,19 +125,26 @@ class PowerManager:
     def _apply_magnet_effect(self, snake, food):
         head_grid_pos = snake.snake_pos[0]
         snake_head_pos_pixels = (head_grid_pos[0] * GRID_SIZE + GRID_SIZE // 2, 
-                                 head_grid_pos[1] * GRID_SIZE + GRID_SIZE // 2)
+                                head_grid_pos[1] * GRID_SIZE + GRID_SIZE // 2)
         magnet_radius_pixels = 3 * GRID_SIZE
-        fruit_pos_pixels = (food.posicao[0] * GRID_SIZE + GRID_SIZE // 2, 
-                            food.posicao[1] * GRID_SIZE + GRID_SIZE // 2)
-        distance = math.hypot(snake_head_pos_pixels[0] - fruit_pos_pixels[0], 
-                              snake_head_pos_pixels[1] - fruit_pos_pixels[1])
-        if distance <= magnet_radius_pixels:
-            new_x, new_y = food.posicao
-            if food.posicao[0] < head_grid_pos[0]: new_x += 1
-            if food.posicao[0] > head_grid_pos[0]: new_x -= 1
-            if food.posicao[1] < head_grid_pos[1]: new_y += 1
-            if food.posicao[1] > head_grid_pos[1]: new_y -= 1
-            food.posicao = (new_x, new_y)
+        # Criamos uma nova lista para as posições atualizadas
+        new_positions = []
+        for food_pos in food.positions:
+            fruit_pos_pixels = (food_pos[0] * GRID_SIZE + GRID_SIZE // 2, 
+                                food_pos[1] * GRID_SIZE + GRID_SIZE // 2)
+            distance = math.hypot(snake_head_pos_pixels[0] - fruit_pos_pixels[0], 
+                                snake_head_pos_pixels[1] - fruit_pos_pixels[1])
+            if distance <= magnet_radius_pixels:
+                new_x, new_y = food_pos
+                if food_pos[0] < head_grid_pos[0]: new_x += 1
+                elif food_pos[0] > head_grid_pos[0]: new_x -= 1
+                if food_pos[1] < head_grid_pos[1]: new_y += 1
+                elif food_pos[1] > head_grid_pos[1]: new_y -= 1
+                new_positions.append((new_x, new_y))
+            else:
+                new_positions.append(food_pos)
+        # Atualiza todas as posições das comidas
+        food.positions = new_positions
 
     def draw_ui(self, screen):
         if self.active_power_type:
