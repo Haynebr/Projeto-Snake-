@@ -2,8 +2,8 @@ import pygame
 
 class MapClass:
     cell_size = 25 # tamanho das células do grid (em pixels)
-    map_width = 40  # largura em nº de célunas
-    map_height = 40  # altura em nº de célunas
+    map_width = 45  # largura em nº de célunas
+    map_height = 30  # altura em nº de célunas
 
     @classmethod
     def draw_grid(cls, screen): # desenha o grid na tela

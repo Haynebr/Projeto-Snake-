@@ -4,11 +4,10 @@ import pygame
 import random
 import math
 
-# Importações relativas (o '.' significa "do mesmo diretório/pacote")
+# CORREÇÃO: Usando importações relativas
 from .Colors import Tema_Base, PRETO, AMARELO
 from .Map import MapClass
 
-# Constantes do módulo
 GRID_SIZE = MapClass.cell_size
 SCREEN_WIDTH = MapClass.map_width * GRID_SIZE
 SCREEN_HEIGHT = MapClass.map_height * GRID_SIZE
@@ -53,7 +52,7 @@ class PowerManager:
         self.power_duration = 7000
         self.font = pygame.font.SysFont('Arial', 24, bold=True)
         self.power_names_map = {
-            'magnet_fruit': 'Fruit magnet',
+            'magnet_fruit': 'Fruit Magnet',
             'turbo': 'Turbo',
             'duplicate_fruit': 'Double Fruit'
         }
@@ -91,12 +90,13 @@ class PowerManager:
                 if self.active_power_type == 'magnet_fruit':
                     self._apply_magnet_effect(snake, food)
     
-    def _spawn_power_box(self, snake, food, obstacle_list):
+    def _spawn_power_box(self, snake, food_list, obstacle_list):
         possible_positions = set((x, y) for x in range(0, SCREEN_WIDTH, GRID_SIZE) for y in range(0, SCREEN_HEIGHT, GRID_SIZE))
+        
         occupied_positions = set((pos[0] * GRID_SIZE, pos[1] * GRID_SIZE) for pos in snake.snake_pos)
-        for pos in food:
-            occupied_positions.add((pos[0] * GRID_SIZE, pos[1] * GRID_SIZE))
+        occupied_positions.update((pos[0] * GRID_SIZE, pos[1] * GRID_SIZE) for pos in food_list)
         occupied_positions.update((pos[0] * GRID_SIZE, pos[1] * GRID_SIZE) for pos in obstacle_list)
+
         safe_positions = list(possible_positions - occupied_positions)
         if safe_positions:
             position = random.choice(safe_positions)
@@ -114,37 +114,33 @@ class PowerManager:
             snake.set_double_points_active(True)
 
     def _deactivate_current_power(self, snake):
-        if not self.active_power_type:
-            return
+        if not self.active_power_type: return
         if self.active_power_type == 'turbo':
             snake.set_fps(BASE_FPS)
         elif self.active_power_type == 'duplicate_fruit':
             snake.set_double_points_active(False)
         self.active_power_type = None
 
-    def _apply_magnet_effect(self, snake, food):
+    def _apply_magnet_effect(self, snake, food_object):
         head_grid_pos = snake.snake_pos[0]
         snake_head_pos_pixels = (head_grid_pos[0] * GRID_SIZE + GRID_SIZE // 2, 
-                                head_grid_pos[1] * GRID_SIZE + GRID_SIZE // 2)
+                                 head_grid_pos[1] * GRID_SIZE + GRID_SIZE // 2)
         magnet_radius_pixels = 3 * GRID_SIZE
-        # Criamos uma nova lista para as posições atualizadas
-        new_positions = []
-        for food_pos in food.positions:
+        
+        # Itera sobre todas as comidas
+        for i, food_pos in enumerate(food_object.positions):
             fruit_pos_pixels = (food_pos[0] * GRID_SIZE + GRID_SIZE // 2, 
                                 food_pos[1] * GRID_SIZE + GRID_SIZE // 2)
             distance = math.hypot(snake_head_pos_pixels[0] - fruit_pos_pixels[0], 
-                                snake_head_pos_pixels[1] - fruit_pos_pixels[1])
+                                  snake_head_pos_pixels[1] - fruit_pos_pixels[1])
+
             if distance <= magnet_radius_pixels:
                 new_x, new_y = food_pos
                 if food_pos[0] < head_grid_pos[0]: new_x += 1
-                elif food_pos[0] > head_grid_pos[0]: new_x -= 1
+                if food_pos[0] > head_grid_pos[0]: new_x -= 1
                 if food_pos[1] < head_grid_pos[1]: new_y += 1
-                elif food_pos[1] > head_grid_pos[1]: new_y -= 1
-                new_positions.append((new_x, new_y))
-            else:
-                new_positions.append(food_pos)
-        # Atualiza todas as posições das comidas
-        food.positions = new_positions
+                if food_pos[1] > head_grid_pos[1]: new_y -= 1
+                food_object.positions[i] = (new_x, new_y)
 
     def draw_ui(self, screen):
         if self.active_power_type:

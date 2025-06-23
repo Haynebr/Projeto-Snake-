@@ -30,33 +30,41 @@ def game_over(screen, screen_w, screen_h, font):
     gOver_rect = gOver_surface.get_rect(center = (screen_w // 2, screen_h // 2.5))
     screen.blit(gOver_surface, gOver_rect)
 
-def player_wins(screen, screen_w, screen_h, medium_font, small_font, player):
+# Em Game/Utils.py
+
+def player_wins(screen, screen_w, screen_h, medium_font, small_font, player, final_score=""):
+    # Define a posição do texto "Press ENTER" dependendo se há um vencedor ou não
+    subtext_position_y = screen_h // 1.7
+
     if player != 0:
-        subtext_position = screen_h // 1.7
-        if player == 1:
-            txt_color = Colors.VERDE
-        if player == 2:
-            txt_color = Colors.CIANO
-        if player == 3:
-            txt_color = Colors.MAGENTA
-        if player != 3: text_surface = medium_font.render(f"Player {player} Wins!", False, txt_color).convert_alpha()
-        else: text_surface = medium_font.render(f"DRAW!", False, txt_color).convert_alpha()
+        # Define a cor baseada em quem ganhou
+        if player == 1: txt_color = Colors.VERDE
+        elif player == 2: txt_color = Colors.CIANO
+        else: txt_color = Colors.MAGENTA # Empate
+
+        # Define o texto baseado em quem ganhou
+        if player != 3:
+            win_text = f"Player {player} Wins!"
+        else:
+            win_text = "DRAW!"
+        
+        text_surface = medium_font.render(win_text, True, txt_color).convert_alpha()
         text_rect = text_surface.get_rect(center = (screen_w // 2, screen_h // 2))
         screen.blit(text_surface, text_rect)
-    else: subtext_position = screen_h // 2.2
+    else:
+        # Se for single player (player 0), ajusta a posição do subtexto
+        subtext_position_y = screen_h // 2.2
+    
+    # --- NOVO BLOCO PARA DESENHAR O SCORE FINAL ---
+    if final_score: # Só desenha se uma string de score foi passada
+        score_surf = small_font.render(final_score, True, Colors.BRANCO)
+        score_rect = score_surf.get_rect(center = (screen_w // 2, screen_h // 1.8))
+        screen.blit(score_surf, score_rect)
+        # Ajusta a posição do "Press Enter" para não sobrepor o score
+        subtext_position_y += 30
 
+    # Desenha o subtexto "Press ENTER"
     subtext_color = Colors.AMARELO
-    subtext_surface = small_font.render(f"*  press ENTER to continue  *", False, subtext_color).convert_alpha()
-    subtext_rect = subtext_surface.get_rect(center = (screen_w // 2, subtext_position))
+    subtext_surface = small_font.render(f"* press ENTER to continue *", True, subtext_color).convert_alpha()
+    subtext_rect = subtext_surface.get_rect(center = (screen_w // 2, subtext_position_y))
     screen.blit(subtext_surface, subtext_rect)
-
-def wait_for_key():
-    waiting = True
-    while waiting:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    waiting = False
