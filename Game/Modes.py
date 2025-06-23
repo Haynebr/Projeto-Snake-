@@ -1,13 +1,15 @@
 
-def iniciar_modo(modo):
-    if modo == "1":
-        print("Iniciando Modo Clássico...")
+def start_mode(mode):
+    if mode == 0:
+        print("Starting Classic mode...")
         
-    elif modo == "2":
-        print("Iniciando Modo Caos...")
+    elif mode == 1:
+        print("Starting 2 Players mode")
         
-    elif modo == "3":
-        print("Iniciando Modo Tempo Limitado...")
+    elif mode == 2:
+        print("Starting Limited Time mode...")
         
     else:
-        print("Modo inválido!")
+        print("Invalid mode!")
+
+

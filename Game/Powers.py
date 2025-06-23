@@ -53,9 +53,9 @@ class PowerManager:
         self.power_duration = 7000
         self.font = pygame.font.SysFont('Arial', 24, bold=True)
         self.power_names_map = {
-            'magnet_fruit': 'Imã de Frutas',
+            'magnet_fruit': 'Fruit magnet',
             'turbo': 'Turbo',
-            'duplicate_fruit': 'Fruta Duplicada'
+            'duplicate_fruit': 'Double Fruit'
         }
 
     def update(self, snake, food, obstacles):

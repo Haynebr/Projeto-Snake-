@@ -22,8 +22,10 @@ class Tema_Base:
     cor_comida_padrão = VERMELHO
     #---------------------------------------
     #Snake
-    cor_cabeca_snake = AMARELO
-    cor_corpo_cobra = VERDE
+    cor_cabeca_P1 = AMARELO
+    cor_corpo_P1 = VERDE
+    cor_cabeca_P2 = CIANO
+    cor_corpo_P2 = AZUL
     #---------------------------------------
     #Powers
     # Lista de cores para a animação da PowerBox
@@ -49,8 +51,10 @@ class Tema_claro:
     cor_comida_padrão = AMARELO
     #---------------------------------------
     #Snake
-    cor_cabeca_snake = PRETO
-    cor_corpo_cobra = CIANO
+    cor_cabeca_P1 = PRETO
+    cor_corpo_P1 = CIANO
+    cor_cabeca_P2 = ROXO
+    cor_corpo_P2 = CINZA
     #---------------------------------------
     #Powers
     # Lista de cores para a animação da PowerBox
