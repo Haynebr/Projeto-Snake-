@@ -36,6 +36,8 @@ def main(map_width, map_height, screen, cell_size, clock):
         current_fps = new_fps
 
     Modes.start_mode(mode)
+    # Para que não surjam obstáculos na frente dos players assim que ele spawna:
+    secure_positions = [(16, 15), (17, 15), (18, 15), (19, 15), (15, 16), (15, 14), (20, 21), (20, 19), (21, 20), (22, 20), (23, 20), (24, 20)]
     snake_P1 = Snake.Snake()
     if mode == 1:
         snake_P2 = Snake.Snake(start_pos=[(15, 15), (14, 15), (13, 15)])
@@ -44,8 +46,8 @@ def main(map_width, map_height, screen, cell_size, clock):
         snakes.append(snake_P2)
     occupied_positions = Utils.get_snakes_positions(snakes)
 
-    obstacles = Obstacle(map_width, map_height, occupied_positions, gameConfigs['Obstacles'])
-    enemies = [Enemy(map_width, map_height, occupied_positions, obstacles.positions) for i in range(gameConfigs['Enemies'])]
+    obstacles = Obstacle(map_width, map_height, occupied_positions, secure_positions, gameConfigs['Obstacles'])
+    enemies = [Enemy(map_width, map_height, occupied_positions, obstacles.positions, secure_positions) for i in range(gameConfigs['Enemies'])]
     score_obj = Score.Score()
     food = Foods.Food(map_width, map_height, occupied_positions, obstacles.positions, gameConfigs['Foods'])
     

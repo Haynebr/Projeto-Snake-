@@ -18,7 +18,7 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
     AMARELO = Colors.AMARELO
     CINZA = Colors.CINZA
 
-    opcoes = ["Enemies", "Foods", "Obstacles", "Powers", "GameMode", "Back"]
+    opcoes = ["Enemies", "Foods", "Obstacles", "Powers", "GameMode", "Reset settings", "Back"]
     opcao_selecionada = 0
 
     modos_jogo = ["Classic", "2 Players", "Limited Time"]
@@ -53,19 +53,39 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
 
                 if evento.key == pygame.K_RIGHT:
                     if opcoes[opcao_selecionada] == "Enemies":
-                        dictConfigs["Enemies"] += 1
+                        dictConfigs["Enemies"] = min(30, dictConfigs["Enemies"] + 1)
                     elif opcoes[opcao_selecionada] == "Foods":
-                        dictConfigs["Foods"] += 1
+                        dictConfigs["Foods"] = min(50, dictConfigs["Foods"] + 1)
                     elif opcoes[opcao_selecionada] == "Obstacles":
-                        dictConfigs["Obstacles"] += 1
+                        dictConfigs["Obstacles"] = min(200, dictConfigs["Obstacles"] + 1)
                     elif opcoes[opcao_selecionada] == "Powers":
                         dictConfigs["Powers"] = not dictConfigs["Powers"]
                     elif opcoes[opcao_selecionada] == "GameMode":
                         dictConfigs["GameMode"] = (dictConfigs["GameMode"] + 1) % len(modos_jogo)
 
                 if evento.key == pygame.K_RETURN:
+                    if opcoes[opcao_selecionada] == "Enemies":
+                        dictConfigs["Enemies"] = min(30, dictConfigs["Enemies"] + 10)
+                    elif opcoes[opcao_selecionada] == "Foods":
+                        dictConfigs["Foods"] = min(50, dictConfigs["Foods"] + 10)
+                    elif opcoes[opcao_selecionada] == "Obstacles":
+                        dictConfigs["Obstacles"] = min(200, dictConfigs["Obstacles"] + 10)
                     if opcoes[opcao_selecionada] == "Back":
                         rodando = False
+                    elif opcoes[opcao_selecionada] == "Reset settings":
+                        dictConfigs["Enemies"] = 0
+                        dictConfigs["Foods"] = 1
+                        dictConfigs["Obstacles"] = 0
+                        dictConfigs["Powers"] = False
+                        dictConfigs["GameMode"] = 0
+
+                if evento.key == pygame.K_BACKSPACE:
+                    if opcoes[opcao_selecionada] == "Enemies":
+                        dictConfigs["Enemies"] = max(0, dictConfigs["Enemies"] - 10)
+                    elif opcoes[opcao_selecionada] == "Foods":
+                        dictConfigs["Foods"] = max(1, dictConfigs["Foods"] - 10)
+                    elif opcoes[opcao_selecionada] == "Obstacles":
+                        dictConfigs["Obstacles"] = max(0, dictConfigs["Obstacles"] - 10)
 
         # Renderizar textos
         for i, opcao in enumerate(opcoes):
@@ -84,6 +104,8 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
             elif opcao == "GameMode":
                 modo = modos_jogo[dictConfigs['GameMode']]
                 texto = f"Game Mode: < {modo} >"
+            elif opcao == "Reset settings":
+                texto = f"Reset settings"
             elif opcao == "Back":
                 texto = "Back"
 

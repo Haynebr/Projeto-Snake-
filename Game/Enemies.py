@@ -1,13 +1,13 @@
 import random
 
 class Enemy:
-    def __init__(self, map_width, map_height, snake_positions, obstacles_positions):
+    def __init__(self, map_width, map_height, snake_positions, obstacles_positions, secure_positions):
         self.map_width = map_width
         self.map_height = map_height
         self.direction = random.choice([(1,0), (-1,0), (0,1), (0,-1)])  # direção inicial aleatória
-        self.snake_pos = self.generate_initial_position(snake_positions, obstacles_positions)
+        self.snake_pos = self.generate_initial_position(snake_positions, obstacles_positions, secure_positions)
 
-    def generate_initial_position(self, snake_positions, obstacles_positions):
+    def generate_initial_position(self, snake_positions, obstacles_positions, secure_positions):
         while True:
             # Posição aleatória para a geração do inimigo
             head_x = random.randint(2, self.map_width - 3)
@@ -22,7 +22,7 @@ class Enemy:
             ]
 
             # Verifica se não colide com cobra, comida ou obstáculos
-            collision = any(pos in snake_positions or pos in obstacles_positions for pos in body)
+            collision = any(pos in snake_positions or pos in obstacles_positions or pos in secure_positions for pos in body)
             if not collision:
                 return body
 
