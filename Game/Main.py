@@ -38,7 +38,7 @@ def main(map_width, map_height, screen, cell_size, clock):
     Modes.start_mode(mode)
     snake_P1 = Snake.Snake()
     if mode == 1:
-        snake_P2 = Snake.Snake(start_pos=[(10, 10), (9, 10), (8, 10)])
+        snake_P2 = Snake.Snake(start_pos=[(15, 15), (14, 15), (13, 15)])
     snakes = [snake_P1]
     if mode == 1:
         snakes.append(snake_P2)
@@ -177,7 +177,7 @@ def main(map_width, map_height, screen, cell_size, clock):
                 Utils.player_wins(screen, screen_width, screen_height, medium_txt_font, small_txt_font, 1)
                 running = False 
                 continue
-            
+
             # Checar se P1 bateu no corpo de P2
             if snake_P1.snake_pos[0] in snake_P2.snake_pos[1:]:
                 Utils.game_over(screen, screen_width, screen_height, big_txt_font)
