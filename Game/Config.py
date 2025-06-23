@@ -1,16 +1,23 @@
+# Game/Config.py
+
 import pygame
 import sys
-from Game import Colors
+from . import Colors # Importação relativa
 
+# CORREÇÃO: Adicionadas as chaves para o modo de tempo e a vírgula que faltava
 dictConfigs = {
     "Enemies": 0,
     "Foods": 1,
     "Obstacles": 0,
     "Powers": False,
-    "GameMode": 0
+    "GameMode": 0, # 0: Classic, 1: 2 Players, 2: Limited Time
+    "TimeLimit_InitialTime": 120, # Em segundos
+    "TimeLimit_TimeGained": 5,    # Segundos ganhos por comida
+    "TimeLimit_TimeLost": 10      # Segundos perdidos por colisão com inimigo
 }
 
 def gameConfigs(screen, screen_width, screen_height, textFont):
+    # O resto do arquivo continua exatamente igual...
     clock = pygame.time.Clock()
 
     PRETO = Colors.PRETO
