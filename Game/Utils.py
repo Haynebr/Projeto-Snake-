@@ -68,3 +68,12 @@ def player_wins(screen, screen_w, screen_h, medium_font, small_font, player, fin
     subtext_surface = small_font.render(f"* press ENTER to continue *", True, subtext_color).convert_alpha()
     subtext_rect = subtext_surface.get_rect(center = (screen_w // 2, subtext_position_y))
     screen.blit(subtext_surface, subtext_rect)
+
+
+def wait_for_key():
+    key_pressed = False
+    while not key_pressed:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    key_pressed = True
