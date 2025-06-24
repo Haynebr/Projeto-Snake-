@@ -117,7 +117,7 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
                 texto = "Back"
 
             label = textFont.render(texto, True, cor)
-            rect = label.get_rect(center=(screen_width // 2, screen_height // 3 + i * 60))
+            rect = label.get_rect(center=(screen_width // 2, screen_height // 4 + i * 60))
             screen.blit(label, rect)
 
         pygame.display.flip()

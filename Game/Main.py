@@ -16,10 +16,9 @@ def main(map_width, map_height, screen, cell_size, clock):
     # Recalcula as dimensões da tela para que sejam conhecidas dentro desta função
     screen_width = cell_size * map_width
     screen_height = cell_size * map_height
-    # --- FIM DA CORREÇÃO ---
 
-    gameConfigs = Config.dictConfigs
-    mode = gameConfigs['GameMode']
+    gameConfigs = Config.dictConfigs # Acessa configurações do jogo
+    mode = gameConfigs['GameMode'] # Salva o modo de jogo
 
     # Fontes
     big_txt_font = pygame.font.Font("Assets/text/Pixeltype.ttf", 120)
@@ -34,21 +33,20 @@ def main(map_width, map_height, screen, cell_size, clock):
 
     # --- Inicialização dos Objetos ---
     Modes.start_mode(mode)
-    # Para que não surjam obstáculos na frente dos players assim que ele spawna:
-    secure_positions = [(16, 15), (17, 15), (18, 15), (19, 15), (15, 16), (15, 14), (20, 21), (20, 19), (21, 20), (22, 20), (23, 20), (24, 20)]
-    snake_P1 = Snake.Snake()
-    snakes = [snake_P1]
+    
+    secure_positions = [(16, 15), (17, 15), (18, 15), (19, 15), (15, 16), (15, 14), (20, 21), (20, 19), (21, 20), (22, 20), (23, 20), (24, 20)] # Para que não surjam obstáculos na frente dos players assim que o jogo inicia:
+    snake_P1 = Snake.Snake() # Ciração do Player 1
+    snakes = [snake_P1] # Lista de players
     if mode == 1:
-        snake_P2 = Snake.Snake(start_pos=[(15, 15), (14, 15), (13, 15)])
-
+        snake_P2 = Snake.Snake(start_pos=[(15, 15), (14, 15), (13, 15)]) # Criação do Player 2
         snakes.append(snake_P2)
     
-    occupied_positions = Utils.get_snakes_positions(snakes)
-    obstacles = Obstacle(map_width, map_height, occupied_positions, secure_positions, gameConfigs['Obstacles'])
-    enemies = [Enemy(map_width, map_height, occupied_positions, obstacles.positions, secure_positions) for i in range(gameConfigs['Enemies'])]
-    score_obj = Score.Score()
+    occupied_positions = Utils.get_snakes_positions(snakes) # Posições ocupadas pelos Players
+    obstacles = Obstacle(map_width, map_height, occupied_positions, secure_positions, gameConfigs['Obstacles']) # Criação de obstáculos
+    enemies = [Enemy(map_width, map_height, occupied_positions, obstacles.positions, secure_positions) for i in range(gameConfigs['Enemies'])] # Criação de inimigos
+    score_obj = Score.Score() # Criação do Score
     
-    all_occupied_start = Utils.get_snakes_positions(snakes) + obstacles.positions + [pos for e in enemies for pos in e.snake_pos]
+    all_occupied_start = Utils.get_snakes_positions(snakes) + obstacles.positions + [pos for e in enemies for pos in e.snake_pos] # Posições ocupadas no início do jogo
     food = Foods.Food(map_width, map_height, all_occupied_start, [], gameConfigs['Foods'])
     
     power_manager = PowerManager()
@@ -84,6 +82,8 @@ def main(map_width, map_height, screen, cell_size, clock):
 
         if gameConfigs['Powers']:
             power_manager.update(snake_P1, food, obstacles)
+            if mode == 1:
+                power_manager.update(snake_P2, food, obstacles)
 
         # Atualiza e verifica o timer
         if time_limit_active:
@@ -102,28 +102,34 @@ def main(map_width, map_height, screen, cell_size, clock):
         for enemy in enemies: enemy.move()
             
         # Lógica de comer comida para P1
-        if snake_P1.snake_pos[0] in food.positions:
+        if snake_P1.snake_pos[0] in food.positions or snake_P1.snake_pos[1] in food.positions:
             if time_limit_active: total_duration_ms += gameConfigs['TimeLimit_TimeGained'] * 1000
             
+            if snake_P1.snake_pos[0] in food.positions: eated_food_pos = snake_P1.snake_pos[0]
+            else: eated_food_pos = snake_P1.snake_pos[1]
+
             growth_amount = 2 if snake_P1.double_points_active else 1
             score_to_add = 20 if snake_P1.double_points_active else 10
             
             score_obj.adicionar(score_to_add, 1)
             score_obj.exibir()
 
-            eaten_food_index = food.positions.index(snake_P1.snake_pos[0])
+            eaten_food_index = food.positions.index(eated_food_pos)
             all_occupied_now = Utils.get_snakes_positions(snakes) + obstacles.positions + [pos for e in enemies for pos in e.snake_pos]
             food.positions[eaten_food_index] = food.gerar_uma_unica_posicao(all_occupied_now, [])
             for _ in range(growth_amount): snake_P1.snake_pos.append(snake_P1.snake_pos[-1])
 
         # Lógica de comer comida para P2 (se aplicável)
-        if mode == 1 and snake_P2.snake_pos[0] in food.positions:
+        if mode == 1 and (snake_P2.snake_pos[0] in food.positions or snake_P2.snake_pos[1] in food.positions):
+            if snake_P2.snake_pos[0] in food.positions: eated_food_pos = snake_P2.snake_pos[0]
+            else: eated_food_pos = snake_P2.snake_pos[1]
+
             growth_amount = 2 if snake_P2.double_points_active else 1
             score_to_add = 20 if snake_P2.double_points_active else 10
 
             score_obj.adicionar(score_to_add, 2)
             score_obj.exibir()
-            eaten_food_index = food.positions.index(snake_P2.snake_pos[0])
+            eaten_food_index = food.positions.index(eated_food_pos)
             
             all_occupied_now = Utils.get_snakes_positions(snakes) + obstacles.positions + [pos for e in enemies for pos in e.snake_pos]
             food.positions[eaten_food_index] = food.gerar_uma_unica_posicao(all_occupied_now, [])
@@ -173,6 +179,7 @@ def main(map_width, map_height, screen, cell_size, clock):
         
         cor_cabeca_P1 = Tema_Base.cor_corpo_cobra_turbo if power_manager.active_power_type == 'turbo' else Tema_Base.cor_cabeca_P1
         cor_corpo_P1 = Tema_Base.cor_corpo_cobra_turbo if power_manager.active_power_type == 'turbo' else Tema_Base.cor_corpo_P1
+        
         Utils.draw_rect(screen, snake_P1.snake_pos[0], cor_cabeca_P1, cell_size)
         for segment in snake_P1.snake_pos[1:]: Utils.draw_rect(screen, segment, cor_corpo_P1, cell_size)
 
