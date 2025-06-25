@@ -42,7 +42,7 @@ while rodando:
     
     titulo = fonte_titulo.render("Snake Game", True, Tema.cor_letras)
     screen.blit(titulo, (screen_width // 2 - titulo.get_width() // 2, screen_height // 4))
-    user_name = fonte_opcao.render(f"User: {Cadastro.nome_cadastrado}", True, AMARELO)
+    user_name = fonte_opcao.render(f"User: {Cadastro.nome_cadastrado}", True, Colors.AMARELO)
     screen.blit(user_name, (10, 720))
 
     mouse_pos = pygame.mouse.get_pos()
@@ -52,12 +52,12 @@ while rodando:
         cor_texto_botao = Tema.cor_fundo_tela
         cor_botao = Tema.cor_letras
         if botao.collidepoint(mouse_pos):
-            cor_botao = Colors.AMARELO
+            cor_botao = Tema.cor_selecao
             if mouse_click:
                 cor_botao = Colors.CINZA
                 opcao_selecionada = i
         if i == opcao_selecionada:
-            cor_botao = Colors.AMARELO
+            cor_botao = Tema.cor_selecao
 
         pygame.draw.rect(screen, cor_botao, botao, border_radius=8)
         texto = fonte_opcao.render(opcoes[i], True, cor_texto_botao)

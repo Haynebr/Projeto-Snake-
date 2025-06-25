@@ -1,5 +1,5 @@
 import pygame
-from Game import Colors
+from Game import Colors, Config
 
 def grid_to_pixel(position, cell_size):
     x = position[0] * cell_size
@@ -25,22 +25,20 @@ def get_snakes_positions(snakes): # Pega as posições de ambas as cobras
 def is_head_at_position(position, snakes): # verifica se a cabeça de alguma cobra está na posição enviada
     return any(snake.snake_pos[0] == position for snake in snakes)
 
-def game_over(screen, screen_w, screen_h, font):
-    gOver_surface = font.render("Game Over", False, (255, 0, 0)).convert_alpha()
+def game_over(screen, screen_w, screen_h, font, Tema):
+    gOver_surface = font.render("Game Over", False, Tema.cor_comida_padrão).convert_alpha()
     gOver_rect = gOver_surface.get_rect(center = (screen_w // 2, screen_h // 2.5))
     screen.blit(gOver_surface, gOver_rect)
 
-# Em Game/Utils.py
-
-def player_wins(screen, screen_w, screen_h, medium_font, small_font, player, final_score=""):
+def player_wins(screen, screen_w, screen_h, medium_font, small_font, player, Tema, final_score=""):
     # Define a posição do texto "Press ENTER" dependendo se há um vencedor ou não
     subtext_position_y = screen_h // 1.7
 
     if player != 0:
         # Define a cor baseada em quem ganhou
-        if player == 1: txt_color = Colors.VERDE
-        elif player == 2: txt_color = Colors.CIANO
-        else: txt_color = Colors.MAGENTA # Empate
+        if player == 1: txt_color = Tema.cor_cabeca_P1
+        elif player == 2: txt_color = Tema.cor_cabeca_P2
+        else: txt_color = Tema.cor_letras # Empate
 
         # Define o texto baseado em quem ganhou
         if player != 3:
@@ -64,7 +62,7 @@ def player_wins(screen, screen_w, screen_h, medium_font, small_font, player, fin
         subtext_position_y += 30
 
     # Desenha o subtexto "Press ENTER"
-    subtext_color = Colors.AMARELO
+    subtext_color = Tema.cor_selecao
     subtext_surface = small_font.render(f"* press ENTER to continue *", True, subtext_color).convert_alpha()
     subtext_rect = subtext_surface.get_rect(center = (screen_w // 2, subtext_position_y))
     screen.blit(subtext_surface, subtext_rect)
