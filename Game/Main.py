@@ -49,8 +49,8 @@ def main(map_width, map_height, screen, cell_size, clock):
     all_occupied_start = Utils.get_snakes_positions(snakes) + obstacles.positions + [pos for e in enemies for pos in e.snake_pos] # Posições ocupadas no início do jogo
     food = Foods.Food(map_width, map_height, all_occupied_start, [], gameConfigs['Foods'])
     
-    power_manager = PowerManager()
-    snake_P1.set_fps = set_game_fps
+    power_manager = PowerManager() # Acessa o módulos de poderes
+    snake_P1.set_fps = set_game_fps # Manutenção do FPS quando o TURBO está ativo
     if mode == 1: snake_P2.set_fps = set_game_fps
 
     # --- LÓGICA DO MODO TEMPO LIMITADO ---
@@ -61,7 +61,7 @@ def main(map_width, map_height, screen, cell_size, clock):
         total_duration_ms = gameConfigs['TimeLimit_InitialTime'] * 1000
 
     running = True 
-    while running:
+    while running: # Loop principal do jogo
         screen.fill(Tema_Base.cor_fundo_tela)
 
         for event in pygame.event.get():
@@ -80,7 +80,7 @@ def main(map_width, map_height, screen, cell_size, clock):
                     elif event.key == pygame.K_a: snake_P2.change_direction((-1, 0))
                     elif event.key == pygame.K_d: snake_P2.change_direction((1, 0))
 
-        if gameConfigs['Powers']:
+        if gameConfigs['Powers']: # Verifica se alguém pegou um poder
             power_manager.update(snake_P1, food, obstacles)
             if mode == 1:
                 power_manager.update(snake_P2, food, obstacles)

@@ -4,7 +4,7 @@ import pygame
 import sys
 from . import Colors # Importação relativa
 
-# CORREÇÃO: Adicionadas as chaves para o modo de tempo e a vírgula que faltava
+# Configurações do jogo
 dictConfigs = {
     "Enemies": 0,
     "Foods": 1,
@@ -17,7 +17,6 @@ dictConfigs = {
 }
 
 def gameConfigs(screen, screen_width, screen_height, textFont):
-    # O resto do arquivo continua exatamente igual...
     clock = pygame.time.Clock()
 
     PRETO = Colors.PRETO
@@ -40,13 +39,13 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
                 pygame.quit()
                 sys.exit()
 
-            if evento.type == pygame.KEYDOWN:
+            if evento.type == pygame.KEYDOWN: # Navega entre as opções com as setas para cima e para baixo
                 if evento.key == pygame.K_UP:
                     opcao_selecionada = (opcao_selecionada - 1) % len(opcoes)
                 if evento.key == pygame.K_DOWN:
                     opcao_selecionada = (opcao_selecionada + 1) % len(opcoes)
 
-                if evento.key == pygame.K_LEFT:
+                if evento.key == pygame.K_LEFT: # Diminui os valores com a seta para esquerda <
                     if opcoes[opcao_selecionada] == "Enemies":
                         dictConfigs["Enemies"] = max(0, dictConfigs["Enemies"] - 1)
                     elif opcoes[opcao_selecionada] == "Foods":
@@ -58,7 +57,7 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
                     elif opcoes[opcao_selecionada] == "GameMode":
                         dictConfigs["GameMode"] = (dictConfigs["GameMode"] - 1) % len(modos_jogo)
 
-                if evento.key == pygame.K_RIGHT:
+                if evento.key == pygame.K_RIGHT: # Aumenta os valores com a seta para direita >
                     if opcoes[opcao_selecionada] == "Enemies":
                         dictConfigs["Enemies"] = min(30, dictConfigs["Enemies"] + 1)
                     elif opcoes[opcao_selecionada] == "Foods":
@@ -70,7 +69,7 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
                     elif opcoes[opcao_selecionada] == "GameMode":
                         dictConfigs["GameMode"] = (dictConfigs["GameMode"] + 1) % len(modos_jogo)
 
-                if evento.key == pygame.K_RETURN:
+                if evento.key == pygame.K_RETURN: # Aumenta os valores em 10 se ENTER for pressionado nas primeiras opções.
                     if opcoes[opcao_selecionada] == "Enemies":
                         dictConfigs["Enemies"] = min(30, dictConfigs["Enemies"] + 10)
                     elif opcoes[opcao_selecionada] == "Foods":
@@ -79,14 +78,14 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
                         dictConfigs["Obstacles"] = min(200, dictConfigs["Obstacles"] + 10)
                     if opcoes[opcao_selecionada] == "Back":
                         rodando = False
-                    elif opcoes[opcao_selecionada] == "Reset settings":
+                    elif opcoes[opcao_selecionada] == "Reset settings": # Reseta as configurações se ENTER for pressionado em "Reset Settings"
                         dictConfigs["Enemies"] = 0
                         dictConfigs["Foods"] = 1
                         dictConfigs["Obstacles"] = 0
                         dictConfigs["Powers"] = False
                         dictConfigs["GameMode"] = 0
 
-                if evento.key == pygame.K_BACKSPACE:
+                if evento.key == pygame.K_BACKSPACE: # Reduz os valores em 10 de BACKSPACE for pressionado nas primeiras opções.
                     if opcoes[opcao_selecionada] == "Enemies":
                         dictConfigs["Enemies"] = max(0, dictConfigs["Enemies"] - 10)
                     elif opcoes[opcao_selecionada] == "Foods":
@@ -116,9 +115,9 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
             elif opcao == "Back":
                 texto = "Back"
 
-            label = textFont.render(texto, True, cor)
-            rect = label.get_rect(center=(screen_width // 2, screen_height // 4 + i * 60))
-            screen.blit(label, rect)
+            label = textFont.render(texto, True, cor) # Renderiza as opões
+            rect = label.get_rect(center=(screen_width // 2, screen_height // 4 + i * 60)) # Retângulo onde as opções serão exibidas
+            screen.blit(label, rect) # Exibe o retângulo na tela
 
         pygame.display.flip()
         clock.tick(60)

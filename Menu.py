@@ -2,7 +2,7 @@
 
 import pygame
 import sys
-from Game import Main, Map, Config, Colors
+from Game import Main, Map, Config, Colors, Cadastro, Rank
 
 pygame.init()
 
@@ -36,6 +36,8 @@ botoes = [
     pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 180, 200, 50),
 ]
 
+Cadastro
+
 rodando = True
 # --- LOOP PRINCIPAL DO MENU ---
 while rodando:
@@ -43,6 +45,8 @@ while rodando:
     
     titulo = fonte_titulo.render("Snake Game", True, BRANCO)
     screen.blit(titulo, (screen_width // 2 - titulo.get_width() // 2, screen_height // 4))
+    user_name = fonte_opcao.render(f"User: {Cadastro.nome_cadastrado}", True, AMARELO)
+    screen.blit(user_name, (10, 720))
 
     mouse_pos = pygame.mouse.get_pos()
     mouse_click = pygame.mouse.get_pressed()[0]
