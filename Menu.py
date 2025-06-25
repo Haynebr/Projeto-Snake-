@@ -6,28 +6,18 @@ from Game import Main, Map, Config, Colors, Cadastro, Rank
 
 pygame.init()
 
-# --- Configurações Gerais ---
 cell_size = Map.MapClass.cell_size
 map_width = Map.MapClass.map_width
 map_height = Map.MapClass.map_height
-
 screen_width = cell_size * map_width
 screen_height = cell_size * map_height
-
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Projeto Snake Game")
 clock = pygame.time.Clock()
 
-# Cores e Fontes
-PRETO = Colors.PRETO
-BRANCO = Colors.BRANCO
-AMARELO = Colors.AMARELO
-CINZA = Colors.CINZA
-
 fonte_titulo = pygame.font.Font("Assets/text/Pixeltype.ttf", 60)
 fonte_opcao = pygame.font.Font("Assets/text/Pixeltype.ttf", 40)
 
-# Opções do Menu
 opcoes = ["Start", "Options", "Exit"]
 opcao_selecionada = 0
 botoes = [
@@ -39,11 +29,18 @@ botoes = [
 Cadastro
 
 rodando = True
-# --- LOOP PRINCIPAL DO MENU ---
 while rodando:
-    screen.fill(PRETO)
+    # --- LÓGICA DE TEMA COMPLETA ---
+    if Config.dictConfigs['Theme'] == 0: Tema = Colors.Tema_Base
+    elif Config.dictConfigs['Theme'] == 1: Tema = Colors.Tema_claro
+    elif Config.dictConfigs['Theme'] == 2: Tema = Colors.Tema_Synthwave
+    elif Config.dictConfigs['Theme'] == 3: Tema = Colors.Tema_Floresta
+    elif Config.dictConfigs['Theme'] == 4: Tema = Colors.Tema_Oceano
+    else: Tema = Colors.Tema_Base
+
+    screen.fill(Tema.cor_fundo_tela)
     
-    titulo = fonte_titulo.render("Snake Game", True, BRANCO)
+    titulo = fonte_titulo.render("Snake Game", True, Tema.cor_letras)
     screen.blit(titulo, (screen_width // 2 - titulo.get_width() // 2, screen_height // 4))
     user_name = fonte_opcao.render(f"User: {Cadastro.nome_cadastrado}", True, AMARELO)
     screen.blit(user_name, (10, 720))
@@ -52,44 +49,33 @@ while rodando:
     mouse_click = pygame.mouse.get_pressed()[0]
 
     for i, botao in enumerate(botoes):
-        cor = BRANCO
+        cor_texto_botao = Tema.cor_fundo_tela
+        cor_botao = Tema.cor_letras
         if botao.collidepoint(mouse_pos):
-            cor = AMARELO
+            cor_botao = Colors.AMARELO
             if mouse_click:
-                cor = CINZA
+                cor_botao = Colors.CINZA
                 opcao_selecionada = i
-        
         if i == opcao_selecionada:
-            cor = AMARELO
+            cor_botao = Colors.AMARELO
 
-        pygame.draw.rect(screen, cor, botao, border_radius=8)
-        texto = fonte_opcao.render(opcoes[i], True, PRETO)
+        pygame.draw.rect(screen, cor_botao, botao, border_radius=8)
+        texto = fonte_opcao.render(opcoes[i], True, cor_texto_botao)
         screen.blit(texto, (botao.centerx - texto.get_width() // 2, botao.centery - texto.get_height() // 2))
 
     for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
-            rodando = False
-
+        if evento.type == pygame.QUIT: rodando = False
         if evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-            if botoes[0].collidepoint(mouse_pos): # Start
-                Main.main(map_width, map_height, screen, cell_size, clock)
-            elif botoes[1].collidepoint(mouse_pos): # Options
-                Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
-            elif botoes[2].collidepoint(mouse_pos): # Exit
-                rodando = False
-
+            if botoes[0].collidepoint(mouse_pos): Main.main(map_width, map_height, screen, cell_size, clock)
+            elif botoes[1].collidepoint(mouse_pos): Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
+            elif botoes[2].collidepoint(mouse_pos): rodando = False
         if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_DOWN:
-                opcao_selecionada = (opcao_selecionada + 1) % len(opcoes)
-            if evento.key == pygame.K_UP:
-                opcao_selecionada = (opcao_selecionada - 1) % len(opcoes)
+            if evento.key == pygame.K_DOWN: opcao_selecionada = (opcao_selecionada + 1) % len(opcoes)
+            if evento.key == pygame.K_UP: opcao_selecionada = (opcao_selecionada - 1) % len(opcoes)
             if evento.key == pygame.K_RETURN:
-                if opcao_selecionada == 0: # Start
-                    Main.main(map_width, map_height, screen, cell_size, clock)
-                elif opcao_selecionada == 1: # Options
-                    Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
-                elif opcao_selecionada == 2: # Exit
-                    rodando = False
+                if opcao_selecionada == 0: Main.main(map_width, map_height, screen, cell_size, clock)
+                elif opcao_selecionada == 1: Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
+                elif opcao_selecionada == 2: rodando = False
 
     pygame.display.flip()
     clock.tick(60)
