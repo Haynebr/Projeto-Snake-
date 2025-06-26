@@ -19,7 +19,7 @@ class PowerBox(pygame.sprite.Sprite):
         self.colors = Tema_Base.cores_animacao_powerbox
         self.color_index = 0
         self.image = pygame.Surface([GRID_SIZE, GRID_SIZE])
-        self.font = pygame.font.Font("Assets/text/Pixeltype.ttf", 40)
+        self.font = pygame.font.Font("Assets/text/Pixeltype.ttf", 30)
         self.rect = self.image.get_rect(topleft=position)
         self.creation_time = pygame.time.get_ticks()
         self.last_color_swap = self.creation_time

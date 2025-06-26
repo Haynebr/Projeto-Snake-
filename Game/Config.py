@@ -11,7 +11,7 @@ dictConfigs = {
 
 def gameConfigs(screen, screen_width, screen_height, textFont):
     clock = pygame.time.Clock()
-    opcoes = ["Enemies", "Foods", "Obstacles", "Powers", "GameMode", "Theme", "Reset settings", "Change User", "Back"]
+    opcoes = ["Enemies", "Foods", "Obstacles", "Powers", "GameMode", "Theme", "Reset settings", "Back"]
     modos_jogo = ["Classic", "2 Players", "Limited Time"]
     # Lista de nomes de temas atualizada
     modos_tema = ["Dark", "Light", "Synthwave", "Forest", "Ocean"]
@@ -62,10 +62,10 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
                     elif opcoes[opcao_selecionada] == "Reset settings":
                         # Reseta para os padrões
                         dictConfigs.update({"Enemies": 0, "Foods": 1, "Obstacles": 0, "Powers": False, "GameMode": 0, "Theme": 0})
-                    elif opcoes[opcao_selecionada] == "Change User": 
-                        Cadastro.nome_cadastrado = None
-                        Cadastro.cadastro_ativo = False
-                        Cadastro
+                    # elif opcoes[opcao_selecionada] == "Change User": 
+                    #     Cadastro.nome_cadastrado = None
+                    #     Cadastro.cadastro_ativo = False
+                    #     Cadastro
 
         for i, opcao in enumerate(opcoes):
             cor = Tema.cor_selecao if i == opcao_selecionada else Tema.cor_letras
@@ -77,7 +77,7 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
             elif opcao == "GameMode": texto = f"Game Mode: < {modos_jogo[dictConfigs['GameMode']]} >"
             elif opcao == "Theme": texto = f"Theme: < {modos_tema[dictConfigs['Theme']]} >"
             elif opcao == "Reset settings": texto = "Reset settings"
-            elif opcao == "Change User": texto = f"Change User: ({Cadastro.nome_cadastrado})"
+            # elif opcao == "Change User": texto = f"Change User: ({Cadastro.nome_cadastrado})"
             elif opcao == "Back": texto = "Back"
             
             label = textFont.render(texto, True, cor)
