@@ -18,12 +18,13 @@ clock = pygame.time.Clock()
 fonte_titulo = pygame.font.Font("Assets/text/Pixeltype.ttf", 60)
 fonte_opcao = pygame.font.Font("Assets/text/Pixeltype.ttf", 40)
 
-opcoes = ["Start", "Options", "Exit"]
+opcoes = ["Start", "Options", "Ranking", "Exit"]
 opcao_selecionada = 0
 botoes = [
     pygame.Rect(screen_width // 2 - 100, screen_height // 3, 200, 50),
     pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 90, 200, 50),
     pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 180, 200, 50),
+    pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 270, 200, 50),
 ]
 
 Cadastro
@@ -68,14 +69,16 @@ while rodando:
         if evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
             if botoes[0].collidepoint(mouse_pos): Main.main(map_width, map_height, screen, cell_size, clock)
             elif botoes[1].collidepoint(mouse_pos): Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
-            elif botoes[2].collidepoint(mouse_pos): rodando = False
+            elif botoes[2].collidepoint(mouse_pos): Rank.exibir_ranking()
+            elif botoes[3].collidepoint(mouse_pos): rodando = False
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_DOWN: opcao_selecionada = (opcao_selecionada + 1) % len(opcoes)
             if evento.key == pygame.K_UP: opcao_selecionada = (opcao_selecionada - 1) % len(opcoes)
             if evento.key == pygame.K_RETURN:
                 if opcao_selecionada == 0: Main.main(map_width, map_height, screen, cell_size, clock)
                 elif opcao_selecionada == 1: Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
-                elif opcao_selecionada == 2: rodando = False
+                elif opcao_selecionada == 2: Rank.exibir_ranking(Tema)
+                elif opcao_selecionada == 3: rodando = False
 
     pygame.display.flip()
     clock.tick(60)

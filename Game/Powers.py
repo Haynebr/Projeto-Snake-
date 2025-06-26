@@ -19,7 +19,7 @@ class PowerBox(pygame.sprite.Sprite):
         self.colors = Tema_Base.cores_animacao_powerbox
         self.color_index = 0
         self.image = pygame.Surface([GRID_SIZE, GRID_SIZE])
-        self.font = pygame.font.SysFont('Consolas', GRID_SIZE * 2 // 3, bold=True)
+        self.font = pygame.font.Font("Assets/text/Pixeltype.ttf", 40)
         self.rect = self.image.get_rect(topleft=position)
         self.creation_time = pygame.time.get_ticks()
         self.last_color_swap = self.creation_time
@@ -50,7 +50,7 @@ class PowerManager:
         self.active_power_type = None
         self.power_start_time = 0
         self.power_duration = 7000
-        self.font = pygame.font.SysFont('Arial', 24, bold=True)
+        self.font = pygame.font.Font("Assets/text/Pixeltype.ttf", 40)
         self.power_names_map = {
             'magnet_fruit': 'Fruit Magnet',
             'turbo': 'Turbo',
@@ -145,7 +145,7 @@ class PowerManager:
     def draw_ui(self, screen):
         if self.active_power_type:
             power_name = self.power_names_map.get(self.active_power_type, "")
-            text_surf = self.font.render(f"Poder Ativo: {power_name}", True, Tema_Base.cor_texto_nome_do_poder)
+            text_surf = self.font.render(f"Active Power: {power_name}", True, Tema_Base.cor_texto_nome_do_poder)
             text_rect = text_surf.get_rect(topright=(SCREEN_WIDTH - 15, 10))
             screen.blit(text_surf, text_rect)
         self.power_box_sprite.draw(screen)

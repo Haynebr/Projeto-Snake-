@@ -1,7 +1,7 @@
 # Game/Config.py
 import pygame
 import sys
-from . import Colors
+from . import Colors, Cadastro
 
 dictConfigs = {
     "Enemies": 0, "Foods": 1, "Obstacles": 0, "Powers": False, "GameMode": 0,
@@ -11,7 +11,7 @@ dictConfigs = {
 
 def gameConfigs(screen, screen_width, screen_height, textFont):
     clock = pygame.time.Clock()
-    opcoes = ["Enemies", "Foods", "Obstacles", "Powers", "GameMode", "Theme", "Reset settings", "Back"]
+    opcoes = ["Enemies", "Foods", "Obstacles", "Powers", "GameMode", "Theme", "Reset settings", "Change User", "Back"]
     modos_jogo = ["Classic", "2 Players", "Limited Time"]
     # Lista de nomes de temas atualizada
     modos_tema = ["Dark", "Light", "Synthwave", "Forest", "Ocean"]
@@ -43,18 +43,29 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
                 if evento.key == pygame.K_LEFT: change = -1
                 
                 if change != 0:
-                    if opcao_atual == "Enemies": dictConfigs["Enemies"] = max(0, dictConfigs["Enemies"] + change)
-                    elif opcao_atual == "Foods": dictConfigs["Foods"] = max(1, dictConfigs["Foods"] + change)
-                    elif opcao_atual == "Obstacles": dictConfigs["Obstacles"] = max(0, dictConfigs["Obstacles"] + change)
-                    elif opcao_atual == "Powers": dictConfigs["Powers"] = not dictConfigs["Powers"]
-                    elif opcao_atual == "GameMode": dictConfigs["GameMode"] = (dictConfigs["GameMode"] + change) % len(modos_jogo)
-                    elif opcao_atual == "Theme": dictConfigs["Theme"] = (dictConfigs["Theme"] + change) % len(modos_tema)
+                    if opcao_atual == "Enemies":
+                        dictConfigs["Enemies"] = min(30, max(0, dictConfigs["Enemies"] + change))
+                    elif opcao_atual == "Foods":
+                        dictConfigs["Foods"] = min(20, max(1, dictConfigs["Foods"] + change))
+                    elif opcao_atual == "Obstacles":
+                        dictConfigs["Obstacles"] = min(200, max(0, dictConfigs["Obstacles"] + change))
+                    elif opcao_atual == "Powers":
+                        dictConfigs["Powers"] = not dictConfigs["Powers"]
+                    elif opcao_atual == "GameMode":
+                        dictConfigs["GameMode"] = (dictConfigs["GameMode"] + change) % len(modos_jogo)
+                    elif opcao_atual == "Theme":
+                        dictConfigs["Theme"] = (dictConfigs["Theme"] + change) % len(modos_tema)
+
                 
                 if evento.key == pygame.K_RETURN:
                     if opcoes[opcao_selecionada] == "Back": rodando = False
                     elif opcoes[opcao_selecionada] == "Reset settings":
                         # Reseta para os padrões
                         dictConfigs.update({"Enemies": 0, "Foods": 1, "Obstacles": 0, "Powers": False, "GameMode": 0, "Theme": 0})
+                    elif opcoes[opcao_selecionada] == "Change User": 
+                        Cadastro.nome_cadastrado = None
+                        Cadastro.cadastro_ativo = False
+                        Cadastro
 
         for i, opcao in enumerate(opcoes):
             cor = Tema.cor_selecao if i == opcao_selecionada else Tema.cor_letras
@@ -66,6 +77,7 @@ def gameConfigs(screen, screen_width, screen_height, textFont):
             elif opcao == "GameMode": texto = f"Game Mode: < {modos_jogo[dictConfigs['GameMode']]} >"
             elif opcao == "Theme": texto = f"Theme: < {modos_tema[dictConfigs['Theme']]} >"
             elif opcao == "Reset settings": texto = "Reset settings"
+            elif opcao == "Change User": texto = f"Change User: ({Cadastro.nome_cadastrado})"
             elif opcao == "Back": texto = "Back"
             
             label = textFont.render(texto, True, cor)

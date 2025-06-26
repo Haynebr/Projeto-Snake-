@@ -88,8 +88,8 @@ def main(map_width, map_height, screen, cell_size, clock):
             time_left_ms = total_duration_ms - elapsed_ms
             if time_left_ms < 0: time_left_ms = 0
             if time_left_ms <= 0:
-                Utils.game_over(screen, screen_width, screen_height, big_txt_font, Tema)
-                Utils.player_wins(screen, screen_width, screen_height, medium_txt_font, small_txt_font, 0, Tema, f"Score: {score_obj.p1_score}")
+                winner = 0
+                Utils.player_wins(screen, screen_width, screen_height, big_txt_font, medium_txt_font, small_txt_font, winner, Tema, f"Score: {score_obj.p1_score}", score_obj.p1_score)
                 running = False
                 continue
 
@@ -141,19 +141,6 @@ def main(map_width, map_height, screen, cell_size, clock):
                 snake_P2.snake_pos[0] in snake_P1.snake_pos or
                 any(snake_P2.snake_pos[0] in e.snake_pos for e in enemies)
             )
-
-        if p1_is_dead or p2_is_dead:
-            winner = 0 
-            if mode == 1:
-                if p1_is_dead and p2_is_dead: winner = 3 
-                elif p1_is_dead: winner = 2 
-                elif p2_is_dead: winner = 1
-            
-            final_score = f"P1: {score_obj.p1_score} | P2: {score_obj.p2_score}" if mode == 1 else f"Score: {score_obj.p1_score}"
-            Utils.game_over(screen, screen_width, screen_height, big_txt_font, Tema)
-            Utils.player_wins(screen, screen_width, screen_height, medium_txt_font, small_txt_font, winner, Tema, final_score)
-            running = False
-            continue
         
         # --- Seção de Desenho Completa ---
         Map.MapClass.draw_grid(screen, (40,40,40), Tema.cor_borda_tela)
@@ -208,7 +195,33 @@ def main(map_width, map_height, screen, cell_size, clock):
             text_rect = text_surf.get_rect(topleft=(10, 10))
             screen.blit(text_surf, text_rect)
 
+        # Desenha os Scores
+        score_text_p1 = f"P1: {score_obj.p1_score}"
+        score_p1_surf = small_txt_font.render(score_text_p1, True, Tema.cor_cabeca_P1)
+        score_p1_rect = score_p1_surf.get_rect(bottomleft=(20, screen_height - 10))
+        screen.blit(score_p1_surf, score_p1_rect)
+
+        if mode == 1:
+            score_text_p2 = f"P2: {score_obj.p2_score}"
+            score_p2_surf = small_txt_font.render(score_text_p2, True, Tema.cor_cabeca_P2)
+            score_p2_rect = score_p2_surf.get_rect(bottomright=(screen_width - 20, screen_height - 10))
+            screen.blit(score_p2_surf, score_p2_rect)
+
         pygame.display.flip()
+
+        # Último frame caso p1 ou p2 estejam mortos:
+        if p1_is_dead or p2_is_dead:
+            winner = 0 
+            if mode == 1:
+                if p1_is_dead and p2_is_dead: winner = 3 
+                elif p1_is_dead: winner = 2 
+                elif p2_is_dead: winner = 1
+            
+            final_score = f"P1: {score_obj.p1_score} | P2: {score_obj.p2_score}" if mode == 1 else f"Score: {score_obj.p1_score}"
+            Utils.player_wins(screen, screen_width, screen_height, big_txt_font, medium_txt_font, small_txt_font, winner, Tema, final_score, score_obj.p1_score)
+            running = False
+            continue
+
         clock.tick(current_fps)
 
     # Fim do loop 'while running:'
