@@ -5,30 +5,33 @@ import sys
 from Game import Main, Map, Config, Colors, Cadastro, Rank
 
 pygame.init()
-
-cell_size = Map.MapClass.cell_size
+# Configurações  do jogo(TAMANHO,LARGURA,ALTURA)
+cell_size = Map.MapClass.cell_size 
 map_width = Map.MapClass.map_width
 map_height = Map.MapClass.map_height
+#Dimensão da tela com base nas dimensões  das celulas
 screen_width = cell_size * map_width
 screen_height = cell_size * map_height
+#Tela do jogo
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Projeto Snake Game")
 clock = pygame.time.Clock()
-
+#Fontes importadas 
 fonte_titulo = pygame.font.Font("Assets/text/Pixeltype.ttf", 60)
 fonte_opcao = pygame.font.Font("Assets/text/Pixeltype.ttf", 40)
 
 opcoes = ["Start", "Options", "Ranking", "Exit"]
 opcao_selecionada = 0
+#Pyrect para criar botões
 botoes = [
     pygame.Rect(screen_width // 2 - 100, screen_height // 3, 200, 50),
     pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 90, 200, 50),
     pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 180, 200, 50),
     pygame.Rect(screen_width // 2 - 100, screen_height // 3 + 270, 200, 50),
 ]
-
+#módulo do menu
 Cadastro
-
+#LOOP PRINCIPAL 
 rodando = True
 while rodando:
     # --- LÓGICA DE TEMA COMPLETA ---
@@ -38,17 +41,17 @@ while rodando:
     elif Config.dictConfigs['Theme'] == 3: Tema = Colors.Tema_Floresta
     elif Config.dictConfigs['Theme'] == 4: Tema = Colors.Tema_Oceano
     else: Tema = Colors.Tema_Base
-
+#renderização  e preenchimento da tela
     screen.fill(Tema.cor_fundo_tela)
-    
+#renderização  do titulo 
     titulo = fonte_titulo.render("Snake Game", True, Tema.cor_letras)
     screen.blit(titulo, (screen_width // 2 - titulo.get_width() // 2, screen_height // 4))
     user_name = fonte_opcao.render(f"User: {Cadastro.nome_cadastrado}", True, Colors.AMARELO)
     screen.blit(user_name, (10, 720))
-
+#verificar clique do mouse
     mouse_pos = pygame.mouse.get_pos()
     mouse_click = pygame.mouse.get_pressed()[0]
-
+#Desenho dos botões  do menu
     for i, botao in enumerate(botoes):
         cor_texto_botao = Tema.cor_fundo_tela
         cor_botao = Tema.cor_letras
@@ -59,11 +62,11 @@ while rodando:
                 opcao_selecionada = i
         if i == opcao_selecionada:
             cor_botao = Tema.cor_selecao
-
+#desenho do botão 
         pygame.draw.rect(screen, cor_botao, botao, border_radius=8)
         texto = fonte_opcao.render(opcoes[i], True, cor_texto_botao)
         screen.blit(texto, (botao.centerx - texto.get_width() // 2, botao.centery - texto.get_height() // 2))
-
+#Tratamento  de Eventos
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT: rodando = False
         if evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
