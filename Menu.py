@@ -72,7 +72,7 @@ while rodando:
         if evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
             if botoes[0].collidepoint(mouse_pos): Main.main(map_width, map_height, screen, cell_size, clock)
             elif botoes[1].collidepoint(mouse_pos): Config.gameConfigs(screen, screen_width, screen_height, fonte_opcao)
-            elif botoes[2].collidepoint(mouse_pos): Rank.exibir_ranking()
+            elif botoes[2].collidepoint(mouse_pos): Rank.exibir_ranking(Tema)
             elif botoes[3].collidepoint(mouse_pos): rodando = False
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_DOWN: opcao_selecionada = (opcao_selecionada + 1) % len(opcoes)
