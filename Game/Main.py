@@ -82,6 +82,8 @@ def main(map_width, map_height, screen, cell_size, clock):
 
         if gameConfigs['Powers']: # Verifica se alguém pegou um poder
             power_manager.update(snake_P1, food, obstacles)
+            if mode == 1:
+                power_manager.update(snake_P2, food, obstacles)
 
         if time_limit_active:
             elapsed_ms = pygame.time.get_ticks() - start_ticks
